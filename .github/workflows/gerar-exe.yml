@@ -1,0 +1,69 @@
+# Gera o RPA-Download-DCTF.exe na nuvem do GitHub e publica para download.
+# - Ao enviar uma etiqueta "v*" (ex.: v1.0), cria/atualiza a Release com o .exe e o guia.
+# - Em Actions > "Gerar executável" > Run workflow, só gera o .exe (fica em Artifacts).
+name: Gerar executável
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Conferir Tcl/Tk (janela do robô)
+        run: python -c "import tkinter; print('Tk', tkinter.TkVersion)"
+
+      - name: Instalar dependências
+        run: python -m pip install -r requirements.txt pyinstaller==6.22.3
+
+      - name: Empacotar
+        run: >
+          python -m PyInstaller --noconfirm --clean --onefile --windowed
+          --name "RPA-Download-DCTF" --icon "assets\icone.ico"
+          --add-data "assets;assets" --collect-all playwright rpa_download_dctf.py
+
+      - name: Conferir o conteúdo do .exe
+        shell: python
+        run: |
+          from PyInstaller.archive.readers import CArchiveReader
+          r = CArchiveReader(r"dist\RPA-Download-DCTF.exe")
+          nomes = [n.lower() for n in r.toc.keys()]
+          for item in ("rpa_download_dctf", "tcl", "tk", "node.exe", "assets\\icone.ico"):
+              assert any(item in n for n in nomes), f"faltou no .exe: {item}"
+          print("ok:", len(nomes), "itens")
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RPA-Download-DCTF
+          path: |
+            dist/RPA-Download-DCTF.exe
+            docs/Guia-do-usuario-RPA-Download-DCTF.pdf
+
+      - name: Publicar a Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: RPA Download DCTF ${{ github.ref_name }}
+          files: |
+            dist/RPA-Download-DCTF.exe
+            docs/Guia-do-usuario-RPA-Download-DCTF.pdf
+          body: |
+            **RPA Download DCTF** baixa os recibos de entrega e as declarações da DCTFWeb no e-CAC, salvando como "Recibo - MM-AAAA.pdf" e "DCTF - MM-AAAA.pdf", com relatório em Excel.
+
+            - Baixe o **RPA-Download-DCTF.exe** e dê dois cliques. Não precisa instalar nada.
+            - Requisitos: Windows 10 ou 11 com Microsoft Edge ou Google Chrome, e acesso ao e-CAC.
+            - Na primeira vez o Windows pode avisar "O Windows protegeu o computador": clique em "Mais informações" e "Executar assim mesmo" (o programa não tem assinatura digital paga).
+            - O login é feito por você, direto no site do e-CAC. O robô não vê nem guarda senha.
+
+            Versão beta, em validação na tela real do e-CAC. Criado por Diego Verciani.
