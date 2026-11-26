@@ -2,14 +2,12 @@
 
 Baixa de uma vez os **recibos de entrega** e as **declarações da DCTFWeb** no e-CAC, para o período e a pasta que você escolher.
 
-### [⬇ Baixar para Windows (RPA-Download-DCTF.exe)](https://github.com/diegoverciani-gif/rpa-download-dctf/releases/latest/download/RPA-Download-DCTF.exe)
-
-[Guia do usuário (PDF)](https://github.com/diegoverciani-gif/rpa-download-dctf/releases/latest/download/Guia-do-usuario-RPA-Download-DCTF.pdf) · [Todas as versões](https://github.com/diegoverciani-gif/rpa-download-dctf/releases) · [Vitrine de aplicações](https://vitrine-diego-verciani.netlify.app)
+O programa para Windows (`RPA-Download-DCTF.exe`) e o guia do usuário em PDF ficam na seção **Releases** deste repositório.
 
 <img src="docs/janela.png" alt="Janela do RPA Download DCTF" width="360">
 
 ## Como usar
-1. Baixe o `RPA-Download-DCTF.exe` e dê dois cliques. Não precisa instalar nada.
+1. Na seção **Releases** deste repositório, abra a versão mais recente e baixe o `RPA-Download-DCTF.exe`. Dê dois cliques: não precisa instalar nada.
 2. Informe a competência inicial e a final (MM/AAAA) e escolha a pasta de destino.
 3. Clique em **Iniciar download**. O navegador abre no login do e-CAC.
 4. Faça o login (certificado digital ou gov.br prata/ouro). Procurador: troque o perfil para a empresa.
@@ -37,4 +35,4 @@ O programa não tem assinatura digital paga, então o navegador pode avisar que 
 O robô é `rpa_download_dctf.py` (Python + Playwright + Tkinter). O executável é gerado pelo GitHub Actions ao publicar uma etiqueta `v*`, ou localmente com `gerar_exe.bat` (Python com Tcl/Tk).
 
 ---
-Criado por **Diego Verciani**. A fonte Instrument Sans é distribuída sob a licença SIL Open Font License (ver `assets/OFL-InstrumentSans.txt`).
+Criado por **Diego Verciani** ([vitrine de aplicações](https://vitrine-diego-verciani.netlify.app)). A fonte Instrument Sans é distribuída sob a licença SIL Open Font License (ver `assets/OFL-InstrumentSans.txt`).
